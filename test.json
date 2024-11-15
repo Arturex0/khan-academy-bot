@@ -1,0 +1,84 @@
+{
+  "answerArea": {
+    "calculator": false,
+    "chi2Table": false,
+    "periodicTable": false,
+    "tTable": false,
+    "zTable": false
+  },
+  "hints": [
+    {
+      "content": "The expression $\\displaystyle\\lim_{x\\to-2}g(x)$ represents the limit of $g$ as $x$ approaches $-2$, and $\\displaystyle\\lim_{x\\to-2^-}g(x)$ represents the limit of $g$ as $x$ approaches $-2$ from the left.\n\nAre either of these limits equal to $6$?",
+      "images": {},
+      "replace": false,
+      "widgets": {}
+    },
+    {
+      "content": "![The graph of function g has 2 arrows pointing along the line segment and the curve. One arrow points along the line segment, up to the right to the closed circle at (negative 2, 6). The other arrow points along the curve, up to the left to the open circle at (negative 2, 4).](web+graphie://cdn.kastatic.org/ka-perseus-graphie/f11ec6d8098ee35730494e85228acf0591d7c736)\n\n$\\displaystyle\\lim_{x\\to-2^-}g(x)$ indeed seems to be equal to $6$.\n\nSince the function doesn't approach the same value from both sides, $\\displaystyle\\lim_{x\\to-2}g(x)$ doesn't exist (specifically, it isn't equal to $6$).",
+      "images": {
+        "web+graphie://cdn.kastatic.org/ka-perseus-graphie/f11ec6d8098ee35730494e85228acf0591d7c736": {
+          "height": 325,
+          "width": 325
+        }
+      },
+      "replace": false,
+      "widgets": {}
+    },
+    {
+      "content": "![The graph of function g has an arrow pointing along the curve, up to the left to (0, 0).](web+graphie://cdn.kastatic.org/ka-perseus-graphie/a77edccc8f8619ecac0962bfcfa05952167762bd)\n\n$\\displaystyle\\lim_{x\\to 0^+}g(x)$ represents the limit of $g$ as $x$ approaches $0$ from the right, and that value seems to be $0$, so this limit exists.",
+      "images": {
+        "web+graphie://cdn.kastatic.org/ka-perseus-graphie/a77edccc8f8619ecac0962bfcfa05952167762bd": {
+          "height": 325,
+          "width": 325
+        }
+      },
+      "replace": false,
+      "widgets": {}
+    },
+    {
+      "content": "In conclusion, this is the only limit expression that agrees with the graph:\n\n$\\displaystyle\\lim_{x\\to-2^-}g(x)=6$",
+      "images": {},
+      "replace": false,
+      "widgets": {}
+    }
+  ],
+  "itemDataVersion": { "major": 0, "minor": 1 },
+  "question": {
+    "content": "Consider the graph of function $g$.\n\n![Function g is graphed. The x-axis goes from negative 8 to 8. The graph consists of a line segment and a curve. The line segment starts in quadrant 3, moves upward, and ends at a closed circle at (negative 2, 6). The curve starts at an open circle at (negative 2, 4), moves downward through (0, 0) to (2, negative 4), moves upward, and ends at (8, 5).](web+graphie://cdn.kastatic.org/ka-perseus-graphie/95199b58300badf0da8183892f60a97e1641feae)\n\n**Which limit expressions agree with the graph?**\n\n[[☃ radio 1]]",
+    "images": {
+      "web+graphie://cdn.kastatic.org/ka-perseus-graphie/95199b58300badf0da8183892f60a97e1641feae": {
+        "height": 325,
+        "width": 325
+      }
+    },
+    "widgets": {
+      "radio 1": {
+        "alignment": "default",
+        "graded": true,
+        "options": {
+          "choices": [
+            { "content": "$\\displaystyle\\lim_{x\\to-2}g(x)=6$" },
+            {
+              "content": "$\\displaystyle\\lim_{x\\to-2^{-}}g(x)=6$",
+              "correct": true
+            },
+            {
+              "content": "$\\displaystyle\\lim_{x\\to0^{+}}g(x)$ doesn't exist",
+              "isNoneOfTheAbove": false
+            },
+            { "content": "", "isNoneOfTheAbove": true }
+          ],
+          "countChoices": false,
+          "deselectEnabled": false,
+          "displayCount": null,
+          "hasNoneOfTheAbove": true,
+          "multipleSelect": true,
+          "randomize": false
+        },
+        "static": false,
+        "type": "radio",
+        "version": { "major": 1, "minor": 0 }
+      }
+    }
+  }
+}

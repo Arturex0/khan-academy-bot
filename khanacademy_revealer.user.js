@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Khan Academy Bot
-// @version      1.9
+// @version      2.0
 // @namespace    https://github.com/Arturex0
 // @description  anwser script
 // @author       Artur Szczurowski; https://github.com/Arturex0
@@ -165,6 +165,7 @@
         answerWindow.appendChild(imgElement);
         answerWindow.appendChild(document.createElement("br"));
     }
+    
 
   }
 
@@ -179,6 +180,9 @@
 
         try {
           item = json.data.assessmentItem.item.itemData;
+
+          console.log(item);
+
           question = JSON.parse(item).question;
         } catch {
           const errorIteration = localStorage.getItem("error_iter") || 0;
@@ -197,6 +201,7 @@
         if (!question) return;
 
         Object.keys(question.widgets).map((widgetName) => {
+          console.log("name", widgetName);
           switch (widgetName.split(" ")[0]) {
             case "numeric-input":
               return freeResponseAnswerFrom(question).log();
@@ -246,20 +251,59 @@
     return new Answer(answer, "free_response");
   }
 
-  function multipleChoiceAnswerFrom(question) {
-    const answer = Object.values(question.widgets)
-      .map((widget) => {
-        if (widget.options?.choices) {
-          return widget.options.choices.map((choice) =>
-            choice.correct ? choice.content : null
-          );
-        }
-      })
-      .flat()
-      .filter((val) => val !== null);
+  // Define the answerArray globally (or you can define it inside the function depending on your scope)
+var answerArray = [];
 
-    return new Answer(answer, "multiple_choice");
-  }
+// Modify the function to add entries to the answerArray
+function multipleChoiceAnswerFrom(question) {
+  // Process the question and get the answers with indexes
+  const answer = Object.values(question.widgets)
+    .map((widget) => {
+      if (widget.options?.choices) {
+        return widget.options.choices
+          .map((choice, index) =>
+            choice.correct ? { content: choice.content, index: index } : null
+          )
+          .filter((val) => val !== null); // Filter out incorrect choices
+      }
+    })
+    .flat()
+    .filter((val) => val !== null);
+
+  // Log each answer content with its index
+  answer.forEach((ans) => {
+    console.log(`Answer: ${ans.content}, Index: ${ans.index}`);
+  });
+
+  // Automatically select the correct answer based on the index
+  answer.forEach((ans) => {
+    const answerIndex = ans.index;
+
+    // Select all radio list items
+    const radioOptions = document.querySelectorAll("ul.perseus-widget-radio li");
+
+    // Check if the index exists in the list and simulate a click
+    if (radioOptions[answerIndex]) {
+      radioOptions[answerIndex].click();
+      console.log(`Clicked on the answer at index: ${answerIndex}`);
+    } else {
+      console.warn(`No radio option found at index: ${answerIndex}`);
+    }
+  });
+
+  // Add the answer data to the global answerArray
+  answerArray.push({
+    type: "multiple-choice",
+    answerIndexes: answer.map((ans) => ans.index), // Collect all the correct indexes
+  });
+
+  console.log("Current answerArray: ", answerArray);
+
+  return new Answer(answer.map((ans) => ans.content), "multiple_choice");
+}
+
+  
+  
 
   function expressionAnswerFrom(question) {
     const answer = Object.values(question.widgets)
@@ -290,4 +334,97 @@
 
     return new Answer(answer, "dropdown");
   }
+
+
+  function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+
+  var questionIndex = 0;
+
+  // anwser array will include 
+  
+  async function detectLetsGoButton() {
+
+    await sleep(2000); // Small delay to ensure the button has loaded
+
+    console.log("WINDOW LOAD");
+    // Use a selector that matches the button structure
+    const letsGoButton = Array.from(document.querySelectorAll('button[type="button"]')).find((button) => {
+      const span = button.querySelector('span');
+      return span && span.textContent.trim() === "Let’s go";
+    });
+  
+    if (letsGoButton) {
+      console.log("Found 'Let’s go' button:", letsGoButton);
+  
+      // Click the button
+      letsGoButton.click();
+      questionIndex = 0;
+      anwserQuestions();
+    } else {
+      console.warn("'Let’s go' button not found on this page.");
+    }
+  }
+  
+  const originalPushState = history.pushState;
+  
+  // Override the pushState and replaceState methods
+  history.pushState = function(state, title, url) {
+    originalPushState.call(history, state, title, url);
+    console.log('URL changed via pushState:', window.location.href);
+    detectLetsGoButton();
+  };
+
+
+
+  
+
+  async function anwserQuestions() {
+    let questionIndex = 0;
+  
+    // Continue running until all answers are processed
+    while (questionIndex < answerArray.length) {
+      await sleep(2000); // Small delay to ensure the button has loaded
+  
+      // Log the current answer indexes for the question
+      console.log(answerArray[questionIndex].answerIndexes);
+  
+      // Iterate over each answer index in the current question's answerIndexes
+      answerArray[questionIndex].answerIndexes.forEach(index => {
+        // Select all radio list items for the current question
+        const radioOptions = document.querySelectorAll("ul.perseus-widget-radio li");
+  
+        console.log("radio-length", radioOptions.length);
+        console.log("radio", radioOptions);
+  
+        // Check if the radio option exists for the given index
+        if (radioOptions[index]) {
+          // Find the button inside the selected radio option
+          const button = radioOptions[index].querySelector("button[type='button']");
+          
+          // If the button exists, click it
+          if (button) {
+            button.click();
+            console.log(`Clicked on answer at index: ${index}`);
+          } else {
+            console.warn(`Button not found inside radio option at index: ${index}`);
+          }
+        } else {
+          console.warn(`No radio option found at index: ${index}`);
+        }
+      });
+  
+      // Move to the next question in the answerArray
+      questionIndex++;
+      break;
+  
+      // Optional: Add a delay before proceeding to the next question (if necessary)
+      // await new Promise(resolve => setTimeout(resolve, 1000)); // Wait for 1 second
+    }
+  }
+  
+
+  
 })();
