@@ -117,6 +117,7 @@
         );
 
 
+        console.log(text);
         this.addAnswerToWindow(text);
       }
     }
@@ -151,11 +152,14 @@
     }
 
     printImage(ans) {
+        console.log("ans: " + ans);
 
         // Extract just the URL part, removing all extra text
         const url = ans.match(/\(web\+graphie:\/\/[^\)]+\)/)[0]
                       .replace("(web+graphie://", "https://")
                       .replace(")", ".svg");
+
+        console.log("URL: " + url);
 
         const imgElement = new Image();
         imgElement.src = url;
